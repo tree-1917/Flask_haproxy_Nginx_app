@@ -1,16 +1,45 @@
 upstream flask_apps {
-	server 127.0.0.1:5000;
-	server 127.0.0.1:5001;
+    server 127.0.0.1:5000;
+    server 127.0.0.1:5001;
 }
 
 server {
     listen 80;
     server_name 54.152.19.91;
 
+    # Static files directory (adjust path to match your project)
+    root /home/ubuntu/myapp/static;
+    
+    # Try to serve static files directly, fallback to Flask
     location / {
+        try_files $uri @flask;
+        
+        # Cache static assets
+        location ~* \.(jpg|jpeg|png|gif|ico|css|js|woff2?|ttf|svg|eot)$ {
+            expires 365d;
+            add_header Cache-Control "public, immutable";
+            access_log off;
+        }
+    }
+
+    # Flask proxy pass
+    location @flask {
         proxy_pass http://flask_apps;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Don't cache API endpoints
+    location /api/ {
+        proxy_pass http://flask_apps;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        proxy_cache off;
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
     }
 }

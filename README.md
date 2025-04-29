@@ -1,17 +1,12 @@
 # **Flask + HAProxy + Nginx Architecture** 🌐🛠️
 
 ```mermaid
-graph LR
-    U[🌍 User] --> N[🛡️ Nginx:80]
-    N --> |📁 Static Files| S[/var/www/static]
-    N --> |🔄 Dynamic| H[⚖️ HAProxy:8080]
-    H --> F1[🐍 Flask App:5000]
-    H --> F2[🐍 Flask App:5001]
-    
-    style U fill:#f9f,stroke:#333
-    style N fill:#39f,stroke:#333
-    style H fill:#f80,stroke:#333
-    style F1,F2 fill:#6f6,stroke:#333
+graph TD
+    Client --> Nginx
+    Nginx -->|Static| StaticFiles
+    Nginx -->|Proxy| HAProxy
+    HAProxy --> Flask1
+    HAProxy --> Flask2
 ```
 
 ## **Core Components** 🧩

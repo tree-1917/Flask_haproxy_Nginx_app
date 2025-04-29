@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask + Nginx Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .api-response {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Flask + Nginx Demo(App 2)</h1>
+    <p>This HTML file is served by Flask and cached by Nginx.</p>
+    
+    <h2>API Response:</h2>
+    <div class="api-response" id="apiResponse">
+        Loading API data...
+    </div>
+
+    <script>
+        // Fetch data from API
+        fetch('/api/v1')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('apiResponse').innerHTML = 
+                    `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            })
+            .catch(error => {
+                document.getElementById('apiResponse').innerHTML = 
+                    `Error loading API data: ${error.message}`;
+            });
+    </script>
+</body>
+</html>
